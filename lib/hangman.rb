@@ -1,23 +1,24 @@
 class Hangman
+  def initialize()
+  end
 
-    def initialize()
+  def pick_random_word()
+    dictionary = File.readlines("5desk.txt")
+    random_line = rand(1..61405)
+    secret_word = dictionary[random_line]
+    while((secret_word.length < 6) || (secret_word.length > 13))
+      random_line = rand(1..61405)
+      secret_word = dictionary[random_line]
     end
+    return secret_word.downcase
+  end
 
-    def pick_random_word()
-      line_number = 0
-       File.open("5desk.txt").each do |line|
-         if((line.size > 5) && (line.size < 14))
-           puts "#{line}__#{(line_number += 1)}"
-         end
-       end
-    end
-
-    def run()
-      secret_word = pick_random_word()
-      puts secret_word
-    end
+  def run()
+    secret_word = pick_random_word()
+    puts secret_word
+  end
 
 end
 
 game = Hangman.new()
-game.pick_random_word()
+game.run()
