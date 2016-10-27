@@ -1,5 +1,6 @@
 class Hangman
   def initialize()
+    @guesses = 12
   end
 
   def pick_random_word()
@@ -15,10 +16,15 @@ class Hangman
 
   def run()
     secret_word = pick_random_word()
-    (secret_word.length).times do
-      print "_ "
+    while @guesses > 0
+      puts "guesses: #{@guesses}"
+      (secret_word.length).times do
+        print "_ "
+      end
+      print "\n"
+      @guesses -= 1
     end
-    print "\n"
+
   end
 
 end
