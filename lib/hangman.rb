@@ -15,7 +15,10 @@ class Hangman
 
   def run()
     secret_word = pick_random_word()
-    puts secret_word
+    (secret_word.length).times do
+      print "_ "
+    end
+    print "\n"
   end
 
 end
