@@ -11,7 +11,7 @@ class Hangman
       random_line = rand(1..61405)
       secret_word = dictionary[random_line]
     end
-    return secret_word.downcase
+    return secret_word.downcase.chomp
   end
 
   def find_letter_matches(secret_word, guess_letter_blanks, human_guess)
@@ -23,7 +23,23 @@ class Hangman
         guess_letter_blanks[index] = letter
       end
     end
+  end
 
+  def game_over(guess_letter_blanks, secret_word)
+    if(guess_letter_blanks.join() == secret_word)
+      return :game_over
+    else
+      :not_yet
+    end
+  end
+
+  def game_over_message(message)
+    if(message == :game_over)
+      puts "Congrats, you won in only #{12 - @guesses} guesses!"
+      exit
+    elsif(message == :not_yet) && (@guesses == 0)
+      puts "Oh no, you did not guess the word in time!"
+    end
   end
 
   def run()
@@ -41,6 +57,8 @@ class Hangman
       human_guess = gets.chomp
       @guesses -= 1
       find_letter_matches(secret_word, guess_letter_blanks, human_guess)
+      message = game_over(guess_letter_blanks, secret_word)
+      game_over_message(message)
     end
 
   end
