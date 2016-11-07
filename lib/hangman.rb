@@ -1,6 +1,7 @@
 class Hangman
   def initialize()
     @guesses = 12
+    @incorrect_letters = []
   end
 
   def pick_random_word()
@@ -14,14 +15,18 @@ class Hangman
     return secret_word.downcase.chomp
   end
 
+  def collect_incorrect_letters(human_guess)
+    @incorrect_letters << human_guess
+  end
+
   def find_letter_matches(secret_word, guess_letter_blanks, human_guess)
-    puts secret_word
-    puts guess_letter_blanks.join()
-    puts human_guess
     secret_word.split(//).each_with_index do |letter, index|
       if(letter == human_guess)
         guess_letter_blanks[index] = letter
       end
+    end
+    if(secret_word.include?(human_guess) == false)
+      collect_incorrect_letters(human_guess)
     end
   end
 
@@ -33,12 +38,12 @@ class Hangman
     end
   end
 
-  def game_over_message(message)
+  def game_over_message(message, secret_word)
     if(message == :game_over)
-      puts "Congrats, you won in only #{12 - @guesses} guesses!"
+      puts "Congrats, you won in only #{12 - @guesses} guesses! The word was #{secret_word}."
       exit
     elsif(message == :not_yet) && (@guesses == 0)
-      puts "Oh no, you did not guess the word in time!"
+      puts "Oh no, you did not guess the word in time! The word was #{secret_word}."
     end
   end
 
@@ -51,6 +56,7 @@ class Hangman
     end
     while @guesses > 0
       puts "guesses: #{@guesses}"
+      puts "Incorrect Guesses: #{@incorrect_letters.join()}"
       puts guess_letter_blanks.join()
       print "\n"
       print "Guess a letter:"
@@ -58,7 +64,7 @@ class Hangman
       @guesses -= 1
       find_letter_matches(secret_word, guess_letter_blanks, human_guess)
       message = game_over(guess_letter_blanks, secret_word)
-      game_over_message(message)
+      game_over_message(message, secret_word)
     end
 
   end
