@@ -59,6 +59,12 @@ class Hangman
       puts "Incorrect Guesses: #{@incorrect_letters.join()}"
       puts guess_letter_blanks.join()
       print "\n"
+      print "Would you like to save your game? Type 'Y' if yes."
+      save = gets.chomp
+      if(save == "Y")
+        puts "Game saved"
+      end
+      print "\n"
       print "Guess a letter:"
       human_guess = gets.chomp
       @guesses -= 1
