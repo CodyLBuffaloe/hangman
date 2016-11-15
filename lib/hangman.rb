@@ -1,4 +1,5 @@
 class Hangman
+require "csv"
   def initialize()
     @guesses = 12
     @incorrect_letters = []
@@ -54,25 +55,32 @@ class Hangman
     (secret_word.length).times do
       guess_letter_blanks << "_ "
     end
-    while @guesses > 0
-      puts "guesses: #{@guesses}"
-      puts "Incorrect Guesses: #{@incorrect_letters.join()}"
-      puts guess_letter_blanks.join()
-      print "\n"
-      print "Would you like to save your game? Type 'Y' if yes."
-      save = gets.chomp
-      if(save == "Y")
-        puts "Game saved"
-      end
-      print "\n"
-      print "Guess a letter:"
-      human_guess = gets.chomp
-      @guesses -= 1
-      find_letter_matches(secret_word, guess_letter_blanks, human_guess)
-      message = game_over(guess_letter_blanks, secret_word)
-      game_over_message(message, secret_word)
+    puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game."
+    load_save = gets.chomp
+    if(load_save == "yes")
+      puts "Saved game retrieved!"
+    else
+        while @guesses > 0
+          puts "guesses: #{@guesses}"
+          puts "Incorrect Guesses: #{@incorrect_letters.join()}"
+          puts guess_letter_blanks.join()
+          print "\n"
+          print "Would you like to save your game? Type 'Y' if yes."
+          save = gets.chomp
+          if(save == "Y")
+            CSV.open("saved_games.csv", "wb") do |csv|
+              csv << [@guesses, secret_word, guess_letter_blanks, @incorrect_letters]
+            end
+          end
+          print "\n"
+          print "Guess a letter:"
+          human_guess = gets.chomp
+          @guesses -= 1
+          find_letter_matches(secret_word, guess_letter_blanks, human_guess)
+          message = game_over(guess_letter_blanks, secret_word)
+          game_over_message(message, secret_word)
+        end
     end
-
   end
 
 end
