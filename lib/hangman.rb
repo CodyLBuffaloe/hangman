@@ -58,7 +58,13 @@ require "csv"
     puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game."
     load_save = gets.chomp
     if(load_save == "yes")
-      puts "Saved game retrieved!"
+      puts "game retrieved!"
+      CSV.parse("saved_games.csv") do |row|
+        @guesses = row[0]
+        secret_word = row[1]
+        guess_letter_blanks = row[2]
+        @incorrect_letters = row[3]
+      end
     else
         while @guesses > 0
           puts "guesses: #{@guesses}"
