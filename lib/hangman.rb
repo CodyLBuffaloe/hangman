@@ -48,6 +48,22 @@ require "csv"
     end
   end
 
+  def save(guesses, secret_word, guess_letter_blanks, incorrect_letters)
+    CSV.open("saved_games.csv", "wb") do |csv|
+      csv << [@guesses, secret_word, guess_letter_blanks, @incorrect_letters]
+    end
+  end
+
+  def load()
+    CSV.parse("saved_games.csv") do |row|
+      @guesses = row[0].to_i
+      secret_word = row[1]
+      guess_letter_blanks = row[2].to_a
+      @incorrect_letters = row[3].to_a
+    end
+    run()
+  end
+
   def run()
     secret_word = pick_random_word()
     guess_letter_blanks = []
@@ -59,12 +75,7 @@ require "csv"
     load_save = gets.chomp
     if(load_save == "yes")
       puts "game retrieved!"
-      CSV.parse("saved_games.csv") do |row|
-        @guesses = row[0]
-        secret_word = row[1]
-        guess_letter_blanks = row[2]
-        @incorrect_letters = row[3]
-      end
+      load()
     else
         while @guesses > 0
           puts "guesses: #{@guesses}"
@@ -74,9 +85,7 @@ require "csv"
           print "Would you like to save your game? Type 'Y' if yes."
           save = gets.chomp
           if(save == "Y")
-            CSV.open("saved_games.csv", "wb") do |csv|
-              csv << [@guesses, secret_word, guess_letter_blanks, @incorrect_letters]
-            end
+            save(@guesses, secret_word, guess_letter_blanks, @incorrect_letters)
           end
           print "\n"
           print "Guess a letter:"
