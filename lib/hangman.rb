@@ -3,6 +3,7 @@ require "csv"
   def initialize()
     @guesses = 12
     @incorrect_letters = []
+    @load_state = false
   end
 
   def pick_random_word()
@@ -55,46 +56,48 @@ require "csv"
   end
 
   def load()
-    CSV.parse("saved_games.csv") do |row|
-      @guesses = row[0].to_i
-      secret_word = row[1]
-      guess_letter_blanks = row[2].to_a
-      @incorrect_letters = row[3].to_a
-    end
-    run()
+    load_data = CSV.read("saved_games.csv")
+    @guesses = load_data[0]
+    secret_word = load_data[1]
+    guess_letter_blanks = load_data[2]
+    @incorrect_letters = load_data[3]
+    load_state = true
   end
 
   def run()
+    puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game."
+    load_game = gets.chomp
     secret_word = pick_random_word()
     guess_letter_blanks = []
     human_guess = nil
     (secret_word.length).times do
       guess_letter_blanks << "_ "
     end
-    puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game."
-    load_save = gets.chomp
-    if(load_save == "yes")
+
+
+    if(load_game == "yes")
       puts "game retrieved!"
       load()
-    else
-        while @guesses > 0
-          puts "guesses: #{@guesses}"
-          puts "Incorrect Guesses: #{@incorrect_letters.join()}"
-          puts guess_letter_blanks.join()
-          print "\n"
-          print "Would you like to save your game? Type 'Y' if yes."
-          save = gets.chomp
-          if(save == "Y")
-            save(@guesses, secret_word, guess_letter_blanks, @incorrect_letters)
-          end
-          print "\n"
-          print "Guess a letter:"
-          human_guess = gets.chomp
-          @guesses -= 1
-          find_letter_matches(secret_word, guess_letter_blanks, human_guess)
-          message = game_over(guess_letter_blanks, secret_word)
-          game_over_message(message, secret_word)
-        end
+      puts @guesses
+      puts @guesses.class
+    end
+    while @guesses > 0
+      puts "guesses: #{@guesses}"
+      puts "Incorrect Guesses: #{@incorrect_letters.join()}"
+      puts guess_letter_blanks.join()
+      print "\n"
+      print "Would you like to save your game? Type 'Y' if yes."
+      save = gets.chomp
+      if(save == "Y")
+        save(@guesses, secret_word, guess_letter_blanks, @incorrect_letters)
+      end
+      print "\n"
+      print "Guess a letter:"
+      human_guess = gets.chomp
+      @guesses -= 1
+      find_letter_matches(secret_word, guess_letter_blanks, human_guess)
+      message = game_over(guess_letter_blanks, secret_word)
+      game_over_message(message, secret_word)
     end
   end
 
