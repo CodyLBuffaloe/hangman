@@ -51,15 +51,23 @@ require "csv"
 
   def save(guesses, secret_word, guess_letter_blanks, incorrect_letters)
     CSV.open("saved_games.csv", "w") do |csv|
-      csv << [guesses, secret_word, guess_letter_blanks, incorrect_letters]
+      csv << [guesses.to_s]
+      csv << [secret_word]
+      csv << [guess_letter_blanks.to_s]
+      csv << [incorrect_letters.to_s]
     end
   end
 
   def load()
     load_data = CSV.read("saved_games.csv",converters: :all)
-    CSV.foreach("saved_games.csv") do |row|
-      puts row.inspect
-    end
+    @guesses = load_data[0][0]
+    secret_word = load_data[1][0]
+    guess_letter_blanks = load_data[2]
+    @incorrect_letters = load_data[3]
+    puts @guesses
+    puts secret_word
+    puts load_data
+
   end
 
   def run()
