@@ -50,18 +50,16 @@ require "csv"
   end
 
   def save(guesses, secret_word, guess_letter_blanks, incorrect_letters)
-    CSV.open("saved_games.csv", "wb") do |csv|
-      csv << [@guesses, secret_word, guess_letter_blanks, @incorrect_letters]
+    CSV.open("saved_games.csv", "w") do |csv|
+      csv << [guesses, secret_word, guess_letter_blanks, incorrect_letters]
     end
   end
 
   def load()
-    load_data = CSV.read("saved_games.csv")
-    @guesses = load_data[0]
-    secret_word = load_data[1]
-    guess_letter_blanks = load_data[2]
-    @incorrect_letters = load_data[3]
-    load_state = true
+    load_data = CSV.read("saved_games.csv",converters: :all)
+    CSV.foreach("saved_games.csv") do |row|
+      puts row.inspect
+    end
   end
 
   def run()
@@ -78,7 +76,8 @@ require "csv"
     if(load_game == "yes")
       puts "game retrieved!"
       load()
-      puts @guesses
+      puts "\n\n"
+      puts @incorrect_letters
       puts @guesses.class
     end
     while @guesses > 0
