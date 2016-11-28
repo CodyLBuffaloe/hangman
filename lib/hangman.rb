@@ -71,7 +71,7 @@ require "csv"
   end
 
   def run()
-    puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game."
+    puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game. Type 'exit' to quit."
     load_game = gets.chomp
     secret_word = pick_random_word()
     guess_letter_blanks = []
@@ -87,16 +87,20 @@ require "csv"
       puts "\n\n"
       puts @incorrect_letters
       puts @guesses.class
+    elsif(load_game == "exit")
+      exit
     end
     while @guesses > 0
       puts "guesses: #{@guesses}"
       puts "Incorrect Guesses: #{@incorrect_letters.join()}"
       puts guess_letter_blanks.join()
       print "\n"
-      print "Would you like to save your game? Type 'Y' if yes."
+      print "Save your game? Type 'Y'. Type 'exit' to quit at anytime w/o saving."
       save = gets.chomp
       if(save == "Y")
         save(@guesses, secret_word, guess_letter_blanks, @incorrect_letters)
+      elsif(save == "exit")
+        exit
       end
       print "\n"
       print "Guess a letter:"
