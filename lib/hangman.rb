@@ -4,17 +4,23 @@ require "csv"
     @guesses = 12
     @incorrect_letters = []
     @load_state = false
+    @secret_word
+    @guess_letter_blanks = []
   end
 
   def pick_random_word()
     dictionary = File.readlines("5desk.txt")
     random_line = rand(1..61405)
-    secret_word = dictionary[random_line]
-    while((secret_word.length < 6) || (secret_word.length > 13))
+    chosen_word = dictionary[random_line]
+    while((chosen_word.length < 6) || (chosen_word.length > 13))
       random_line = rand(1..61405)
-      secret_word = dictionary[random_line]
+      chosen_word = dictionary[random_line]
     end
-    return secret_word.downcase.chomp
+    chosen_word.downcase.chomp
+  end
+
+  def assign_secret_word()
+    @secret_word = pick_random_word()
   end
 
   def collect_incorrect_letters(human_guess)
@@ -33,7 +39,7 @@ require "csv"
   end
 
   def game_over(guess_letter_blanks, secret_word)
-    if(guess_letter_blanks.join() == secret_word)
+    if(@guess_letter_blanks.join() == secret_word)
       return :game_over
     else
       :not_yet
@@ -61,26 +67,19 @@ require "csv"
   def load()
     load_data = CSV.read("saved_games.csv",converters: :all)
     @guesses = load_data[0][0]
-    secret_word = load_data[1][0]
-    guess_letter_blanks = load_data[2]
+    @secret_word = load_data[1][0]
+    @guess_letter_blanks = load_data[2]
     @incorrect_letters = load_data[3]
-    puts @guesses
-    puts secret_word
-    puts load_data
-
+    puts "*TEST GLB*"
+    puts @guess_letter_blanks.class
+    puts @incorrect_letters.class
+    puts "*END GLB TEST*"
   end
 
   def run()
     puts "Would you like to load a saved game? Type 'yes' if so, and 'no' if you'd like a new game. Type 'exit' to quit."
     load_game = gets.chomp
-    secret_word = pick_random_word()
-    guess_letter_blanks = []
     human_guess = nil
-    (secret_word.length).times do
-      guess_letter_blanks << "_ "
-    end
-
-
     if(load_game == "yes")
       puts "game retrieved!"
       load()
@@ -89,16 +88,24 @@ require "csv"
       puts @guesses.class
     elsif(load_game == "exit")
       exit
+    else
+      assign_secret_word()
+      (@secret_word.length).times do
+        @guess_letter_blanks << "_ "
+      end
     end
+
+
+
     while @guesses > 0
       puts "guesses: #{@guesses}"
       puts "Incorrect Guesses: #{@incorrect_letters.join()}"
-      puts guess_letter_blanks.join()
+      puts @guess_letter_blanks.join()
       print "\n"
       print "Save your game? Type 'Y'. Type 'exit' to quit at anytime w/o saving."
       save = gets.chomp
       if(save == "Y")
-        save(@guesses, secret_word, guess_letter_blanks, @incorrect_letters)
+        save(@guesses, @secret_word, guess_letter_blanks, @incorrect_letters)
       elsif(save == "exit")
         exit
       end
@@ -106,9 +113,9 @@ require "csv"
       print "Guess a letter:"
       human_guess = gets.chomp
       @guesses -= 1
-      find_letter_matches(secret_word, guess_letter_blanks, human_guess)
-      message = game_over(guess_letter_blanks, secret_word)
-      game_over_message(message, secret_word)
+      find_letter_matches(@secret_word, @guess_letter_blanks, human_guess)
+      message = game_over(@guess_letter_blanks, @secret_word)
+      game_over_message(message, @secret_word)
     end
   end
 
