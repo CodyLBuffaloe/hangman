@@ -60,10 +60,10 @@ require "csv"
 
   def save(guesses, secret_word, guess_letter_blanks, incorrect_letters)
     CSV.open("saved_games.csv", "w") do |csv|
-      csv << [guesses.to_s]
+      csv << [guesses]
       csv << [secret_word]
-      csv << [guess_letter_blanks.to_s]
-      csv << [incorrect_letters.to_s]
+      csv << guess_letter_blanks
+      csv << incorrect_letters
     end
   end
 
@@ -73,10 +73,10 @@ require "csv"
     @secret_word = load_data[1][0]
     @guess_letter_blanks = load_data[2][0].split(",")
     @incorrect_letters = load_data[3]
-    puts "*TEST GLB*"
-    puts @guess_letter_blanks
-    puts @incorrect_letters
-    puts "*END GLB TEST*"
+    puts "*TEST secret word*"
+    puts @secret_word
+    puts @secret_word.length()
+    puts "*END secret word test*"
     @load_state = true
   end
 
@@ -87,33 +87,28 @@ require "csv"
     if(load_game == "yes")
       puts "game retrieved!"
       load()
-      puts "\n\n"
-      puts @incorrect_letters
-      puts @guesses.class
     elsif(load_game == "exit")
       exit
     else
       assign_secret_word()
-      (@secret_word.length).times do
-        @guess_letter_blanks << "_ "
-      end
+
+
     end
 
+    (@secret_word.chomp.length).times do
+      @guess_letter_blanks << "_ "
+    end
 
 
     while @guesses > 0
       puts "guesses: #{@guesses}"
       puts "Incorrect Guesses: #{@incorrect_letters.join()}"
       puts @guess_letter_blanks.join()
-      puts @guess_letter_blanks.class
-      puts @guess_letter_blanks[2]
-      puts @guess_letter_blanks[2].class
-      @guess_letter_blanks.each_with_index {|a, i| puts "#{a}, #{a.class}, #{i}"}
       print "\n"
       print "Save your game? Type 'Y'. Type 'exit' to quit at anytime w/o saving."
       save = gets.chomp
       if(save == "Y")
-        save(@guesses, @secret_word, guess_letter_blanks, @incorrect_letters)
+        save(@guesses, @secret_word, @guess_letter_blanks, @incorrect_letters)
       elsif(save == "exit")
         exit
       end
