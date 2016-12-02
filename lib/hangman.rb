@@ -68,11 +68,11 @@ require "csv"
     load_data = CSV.read("saved_games.csv",converters: :all)
     @guesses = load_data[0][0]
     @secret_word = load_data[1][0]
-    @guess_letter_blanks = load_data[2]
+    @guess_letter_blanks = load_data[2][0].split(",")
     @incorrect_letters = load_data[3]
     puts "*TEST GLB*"
-    puts @guess_letter_blanks.class
-    puts @incorrect_letters.class
+    puts @guess_letter_blanks
+    puts @incorrect_letters
     puts "*END GLB TEST*"
   end
 
@@ -101,6 +101,10 @@ require "csv"
       puts "guesses: #{@guesses}"
       puts "Incorrect Guesses: #{@incorrect_letters.join()}"
       puts @guess_letter_blanks.join()
+      puts @guess_letter_blanks.class
+      puts @guess_letter_blanks[2]
+      puts @guess_letter_blanks[2].class
+      @guess_letter_blanks.each_with_index {|a, i| puts "#{a}, #{i}"}
       print "\n"
       print "Save your game? Type 'Y'. Type 'exit' to quit at anytime w/o saving."
       save = gets.chomp
