@@ -6,6 +6,7 @@ require "csv"
     @load_state = false
     @secret_word
     @guess_letter_blanks = []
+    load_state = false
   end
 
   def pick_random_word()
@@ -41,6 +42,8 @@ require "csv"
   def game_over(guess_letter_blanks, secret_word)
     if(@guess_letter_blanks.join() == secret_word)
       return :game_over
+    elsif(@load_state == true)
+      puts "Cannot evaluate at this time."
     else
       :not_yet
     end
@@ -74,6 +77,7 @@ require "csv"
     puts @guess_letter_blanks
     puts @incorrect_letters
     puts "*END GLB TEST*"
+    @load_state = true
   end
 
   def run()
@@ -104,7 +108,7 @@ require "csv"
       puts @guess_letter_blanks.class
       puts @guess_letter_blanks[2]
       puts @guess_letter_blanks[2].class
-      @guess_letter_blanks.each_with_index {|a, i| puts "#{a}, #{i}"}
+      @guess_letter_blanks.each_with_index {|a, i| puts "#{a}, #{a.class}, #{i}"}
       print "\n"
       print "Save your game? Type 'Y'. Type 'exit' to quit at anytime w/o saving."
       save = gets.chomp
